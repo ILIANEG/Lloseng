@@ -117,7 +117,7 @@ public class EchoServer extends AbstractServer
 
   synchronized protected void clientException(
     ConnectionToClient client, Throwable exception) {
-      clientDisconnected(client);
+      System.out.println("Client disconnected: connection with client was interrupted");
     }
 }
 //End of EchoServer class
