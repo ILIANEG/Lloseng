@@ -48,7 +48,20 @@ public class ChatClient extends AbstractClient
 
   
   //Instance methods ************************************************
-    
+  
+  public void connectionException(Exception exception) {
+    try {
+      closeConnection();
+    } catch (IOException e) {
+      System.out.println("Connection lost and can not be closed");
+    }
+  }
+
+  public void connectionClosed() {
+    System.out.println("Connection with server is lost");
+    System.exit(0);
+  }
+
   /**
    * This method handles all data that comes in from the server.
    *
