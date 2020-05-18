@@ -119,14 +119,18 @@ public class ClientConsole implements ChatIF
     }
     try {
       port = Integer.valueOf(args[0]);
+    } 
+    catch (IndexOutOfBoundsException e) {
+      port = DEFAULT_PORT;
     }
     finally {
       if (!(1 <= intLength(port) && intLength(port) <= 5)) {
+        System.out.println("default port");
         port = DEFAULT_PORT;
-      }
-      ClientConsole chat= new ClientConsole(host, port);
-      chat.accept();  //Wait for console data 
+      } 
     }
+    ClientConsole chat= new ClientConsole(host, port);
+    chat.accept();  //Wait for console data
   }
   private static int intLength(int number) {
     int divisor = 1;
