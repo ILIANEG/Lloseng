@@ -1,4 +1,4 @@
-package client;
+package common;
 import java.util.StringTokenizer;
 
 public class Command {
@@ -40,4 +40,9 @@ public class Command {
             return false;
         }
     }
+
+    public void commandError() {
+        System.out.println("# COMMAND HAS NOT BEEN EXECUTES #");
+      }
+    
 }

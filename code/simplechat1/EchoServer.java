@@ -3,6 +3,7 @@
 // license found at www.lloseng.com 
 
 import java.io.*;
+import common.*;
 import ocsf.server.*;
 
 /**
@@ -23,6 +24,11 @@ public class EchoServer extends AbstractServer
    * The default port to listen on.
    */
   final public static int DEFAULT_PORT = 5555;
+
+  /**
+   * The console UI
+   */
+  ChatIF serverUI;
   
   //Constructors ****************************************************
   
@@ -48,6 +54,12 @@ public class EchoServer extends AbstractServer
   public void handleMessageFromClient
     (Object msg, ConnectionToClient client)
   {
+    /*try {
+      if (Command.isCommand((String) msg)) {
+        Command command = new Command((String) msg);
+        execute(command);
+      }
+    }*/
     System.out.println("Message received: " + msg + " from " + client);
     this.sendToAllClients(msg);
   }
@@ -71,6 +83,100 @@ public class EchoServer extends AbstractServer
     System.out.println
       ("Server has stopped listening for connections.");
   }
+
+  /**
+   * Method receives argument of type Command and interpretates
+   * such command in context of server
+   * @param c
+   * @throws IllegalArgumentException
+   */
+  public void execute(Command c) throws IllegalArgumentException {
+    switch(c.getCommand()) {
+      case "quit":
+        stopListening();
+        try {
+          close();
+        } catch (IOException e) {
+          c.commandError();
+          serverUI.display("Can not close connection");
+        } 
+        System.exit(0);
+        break;
+      case "stop":
+        stopListening();
+        break;
+      case "close":
+        stopListening();
+        try {
+          close();
+        } catch (IOException e) {
+          c.commandError();
+          serverUI.display("Can not close connection");
+        } 
+        break;
+      case "setport":
+        if (c.getArgument() == null || 5 < c.getArgument().length()
+            || c.getArgument().length() == 0) {
+          c.commandError();
+          serverUI.display("Invalid port number");
+          break;
+        }
+        Integer p = null;
+        try {
+          p = Integer.parseInt(c.getArgument());
+        } catch (NumberFormatException e) {
+          c.commandError();
+          serverUI.display("Invalid port number");
+          break;
+        }
+        if (p != null) {
+            setPort(p);
+        }
+        break;
+      case "start":
+        if (!isListening()) {
+          try {
+            listen();
+          } catch (IOException e) {
+            c.commandError();
+            serverUI.display("Can not listen for connections");
+          }
+        } else {
+          c.commandError();
+          serverUI.display("Server is already listening for connection");
+        }
+        break;
+      case "getport":
+        serverUI.display(Integer.toString(getPort()));
+        break;
+      default:
+        c.commandError();
+        serverUI.display("Can not recognize the command");
+      }
+    }
+
+    /**
+     * Prints notification about connected client
+     */
+    protected void clientConnected(ConnectionToClient client) {
+      System.out.println("Client "+client.toString()+" connected to the server");
+    }
+    
+    /**
+     * Prints notification about disconnected client
+     */
+    synchronized protected void clientDisconnected(
+      ConnectionToClient client) {
+        System.out.println("Client disconnected from the server");
+    }
+    
+    /**
+     * prints notification if connection with client was interrupted
+     */
+    synchronized protected void clientException(
+      ConnectionToClient client, Throwable exception) {
+        System.out.println("Connection with client was interrupted");
+      }
   
   //Class methods ***************************************************
   
@@ -79,7 +185,7 @@ public class EchoServer extends AbstractServer
    * the server instance (there is no UI in this phase).
    *
    * @param args[0] The port number to listen on.  Defaults to 5555 
-   *          if no argument is entered.
+   * if no argument is entered.
    */
   public static void main(String[] args) 
   {
@@ -105,19 +211,6 @@ public class EchoServer extends AbstractServer
       System.out.println("ERROR - Could not listen for clients!");
     }
   }
-  //Overriden methods ***************************************************
-  protected void clientConnected(ConnectionToClient client) {
-    System.out.println("Client connected: "+client.toString()+" connected to the server");
-  }
 
-  synchronized protected void clientDisconnected(
-    ConnectionToClient client) {
-      System.out.println("Client disconnected: "+client.toString()+" disconnected from the server");
-  }
-
-  synchronized protected void clientException(
-    ConnectionToClient client, Throwable exception) {
-      System.out.println("Client disconnected: connection with client was interrupted");
-    }
 }
 //End of EchoServer class
