@@ -1,6 +1,7 @@
 // This file contains material supporting section 3.7 of the textbook:
 // "Object Oriented Software Engineering" and is issued under the open-source
 // license found at www.lloseng.com 
+package server;
 
 import java.io.*;
 import common.*;
@@ -54,12 +55,6 @@ public class EchoServer extends AbstractServer
   public void handleMessageFromClient
     (Object msg, ConnectionToClient client)
   {
-    /*try {
-      if (Command.isCommand((String) msg)) {
-        Command command = new Command((String) msg);
-        execute(command);
-      }
-    }*/
     System.out.println("Message received: " + msg + " from " + client);
     this.sendToAllClients(msg);
   }
@@ -84,77 +79,10 @@ public class EchoServer extends AbstractServer
       ("Server has stopped listening for connections.");
   }
 
-  /**
-   * Method receives argument of type Command and interpretates
-   * such command in context of server
-   * @param c
-   * @throws IllegalArgumentException
-   */
-  public void execute(Command c) throws IllegalArgumentException {
-    switch(c.getCommand()) {
-      case "quit":
-        stopListening();
-        try {
-          close();
-        } catch (IOException e) {
-          c.commandError();
-          serverUI.display("Can not close connection");
-        } 
-        System.exit(0);
-        break;
-      case "stop":
-        stopListening();
-        break;
-      case "close":
-        stopListening();
-        try {
-          close();
-        } catch (IOException e) {
-          c.commandError();
-          serverUI.display("Can not close connection");
-        } 
-        break;
-      case "setport":
-        if (c.getArgument() == null || 5 < c.getArgument().length()
-            || c.getArgument().length() == 0) {
-          c.commandError();
-          serverUI.display("Invalid port number");
-          break;
-        }
-        Integer p = null;
-        try {
-          p = Integer.parseInt(c.getArgument());
-        } catch (NumberFormatException e) {
-          c.commandError();
-          serverUI.display("Invalid port number");
-          break;
-        }
-        if (p != null) {
-            setPort(p);
-        }
-        break;
-      case "start":
-        if (!isListening()) {
-          try {
-            listen();
-          } catch (IOException e) {
-            c.commandError();
-            serverUI.display("Can not listen for connections");
-          }
-        } else {
-          c.commandError();
-          serverUI.display("Server is already listening for connection");
-        }
-        break;
-      case "getport":
-        serverUI.display(Integer.toString(getPort()));
-        break;
-      default:
-        c.commandError();
-        serverUI.display("Can not recognize the command");
-      }
-    }
-
+  public void displaySystem(String sys) {
+    serverUI.display("SYSTEM> "+sys);
+  }
+  
     /**
      * Prints notification about connected client
      */

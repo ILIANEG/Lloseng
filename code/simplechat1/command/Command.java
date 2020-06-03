@@ -1,13 +1,17 @@
-package common;
+package command;
 import java.util.StringTokenizer;
 
+/**
+ * This class breaks message with # in the beggining
+ * into command-friendly form with command string
+ * and argument String
+ */
 public class Command {
     
     private String command;
     private String argument;
 
-
-    public Command (String message) {
+    public Command(String message) {
         if (!isCommand(message) || message == null) {
             throw new IllegalArgumentException();
         } else {
@@ -34,15 +38,20 @@ public class Command {
     }
 
     public static boolean isCommand (String s) {
-         if (s.charAt(0) == '#') {
-            return true;
-        } else {
+        if (s == null || s.charAt(0) != '#') {
             return false;
+        } else {
+            return true;
         }
     }
-
-    public void commandError() {
-        System.out.println("# COMMAND HAS NOT BEEN EXECUTES #");
-      }
+    
+    public String toMessage() {
+        String message = "#" + command;
+        if (argument == null) {
+            return message;
+        } else {
+            return message+"<"+argument+">";
+        }
+    }
     
 }

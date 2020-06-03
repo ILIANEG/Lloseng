@@ -27,7 +27,11 @@ public class ChatClient extends AbstractClient
    */
   ChatIF clientUI; 
 
-  
+  /**
+   * login id that is used by server to recognize the user
+   */
+  String loginID;
+
   //Constructors ****************************************************
   
   /**
@@ -38,11 +42,16 @@ public class ChatClient extends AbstractClient
    * @param clientUI The interface type variable.
    */
   
-  public ChatClient(String host, int port, ChatIF clientUI) 
-    throws IOException 
+  public ChatClient(String loginID,String host, int port, ChatIF clientUI) 
+    throws IOException, IllegalArgumentException
   {
     super(host, port); //Call the superclass constructor
     this.clientUI = clientUI;
+    if (loginID == null) {
+      throw new IllegalArgumentException();
+    } else {
+      this.loginID = loginID;
+    }
     openConnection();
   }
 
@@ -66,10 +75,9 @@ public class ChatClient extends AbstractClient
    */
   public void handleMessageFromClientUI(String message)
   {
-    if (Command.isCommand(message)) {
+    /*if (Command.isCommand(message)) {
       Command c = new Command(message);
-      execute(c);
-    } else {
+    } else {*/
       try
       {
         sendToServer(message);
@@ -81,7 +89,6 @@ public class ChatClient extends AbstractClient
         quit();
       }
     }
-  }
   
   /**
    * This method terminates the client.
@@ -94,6 +101,16 @@ public class ChatClient extends AbstractClient
     }
     catch(IOException e) {}
     System.exit(0);
+  }
+
+  /**
+   * Method sends system message to client, such as command output
+   * For example when command was not executed successfully
+   * Warning will be displayed
+   * @param warning
+   */
+  public void displaySystem(String sys) {
+    clientUI.display("SYSTEM> "+sys);
   }
 
   /**
@@ -113,73 +130,17 @@ public class ChatClient extends AbstractClient
     clientUI.display("Connection with server was interrupted");
   }
 
-/**
- * Receives argument of type command and interpretates it
- * in terms of chat client
- * @param c
- * @throws IllegalArgumentException
- */
-public void execute(Command c) throws IllegalArgumentException {
-  switch(c.getCommand()) {
-    case "quit":
+  /**
+   * Overriden hook method that sends login information
+   * upon establishing connection with the server
+   */
+  protected void connectionEstablished() {
+    try {
+      sendToServer("#login <"+loginID+">");
+    } catch (IOException e) {
+      clientUI.display
+        ("Could not send message to server.  Terminating client.");
       quit();
-      break;
-    case "logoff":
-        try {
-            closeConnection(); 
-        } catch (IOException e) {
-            c.commandError();
-            clientUI.display("Attempt to log off was unsuccesfull");
-        }
-        break;
-    case "sethost":
-        if (c.getArgument() == null) {
-          c.commandError();
-          clientUI.display("Attempt to set host was unsuccesfull");
-          break;
-        }
-        setHost(c.getArgument());
-        break;
-    case "setport":
-        if (5 < c.getArgument().length() || c.getArgument() == null) {
-          c.commandError();
-          clientUI.display("Invalid port number");
-          break;
-        }
-        Integer p = null;
-        try {
-          p = Integer.parseInt(c.getArgument());
-        } catch (NumberFormatException e) {
-          c.commandError();
-          c.commandError();
-          clientUI.display("Invalid port number"); 
-        }
-        if (p != null) {
-            setPort(p);
-        }
-        break;
-      case "login":
-        try {
-            openConnection();
-            if (!(isConnected())) {
-              c.commandError();
-              clientUI.display("Can not connect");
-              closeConnection();
-            }
-            break;
-        } catch (IOException e) {
-            break;
-        }
-      case "gethost":
-        clientUI.display(getHost());
-        break;
-      case "getport":
-        clientUI.display(Integer.toString(getPort()));
-        break;
-      default:
-        c.commandError();
-        clientUI.display("Unknown command");
-      
     }
   }
 }

@@ -1,22 +1,29 @@
 import java.io.*;
 import client.*;
 import common.*;
-
+import command.*;
+import server.*;
 public class ServerConsole implements ChatIF {
 
-    /**
-     * Instance of server that cleates this console
-     */
-    EchoServer server;
+  /**
+  * Instance of server that creates this console
+  */
+  private EchoServer server;
 
-    /**
-    * The default port to listen on.
-    */
+  /**
+  * The default port to listen to.
+  */
   final public static int DEFAULT_PORT = 5555;
+
+  /**
+   * Command invoker for this server
+   */
+  private ServerCommandInvoker commander;
 
 
     public ServerConsole(int port) {
         server = new EchoServer(port);
+        commander = new ServerCommandInvoker(server);
     }
 
     /**
@@ -36,8 +43,7 @@ public class ServerConsole implements ChatIF {
             while (true) {
                 message = fromConsole.readLine();
                 if (Command.isCommand(message)) {
-                  Command command = new Command(message);
-                  server.execute(command);
+                  commander.execute(new Command(message));
                 } else {
                   server.sendToAllClients("SERVER MSG> " + message);
                   display(message);

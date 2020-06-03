@@ -4,6 +4,7 @@
 
 import java.io.*;
 import client.*;
+import command.*;
 import common.*;
 
 /**
@@ -32,6 +33,12 @@ public class ClientConsole implements ChatIF
    */
   ChatClient client;
 
+  /**
+   * instance of command invoker which will take care about 
+   * executing commands when appropriately formatted message
+   * obtained from user
+   */
+  ClientCommandInvoker commander;
   
   //Constructors ****************************************************
 
@@ -41,11 +48,11 @@ public class ClientConsole implements ChatIF
    * @param host The host to connect to.
    * @param port The port to connect on.
    */
-  public ClientConsole(String host, int port) 
+  public ClientConsole(String id, String host, int port) 
   {
     try 
     {
-      client= new ChatClient(host, port, this);
+      client= new ChatClient(id, host, port, this);
     } 
     catch(IOException exception) 
     {
@@ -53,6 +60,7 @@ public class ClientConsole implements ChatIF
                 + " Terminating client.");
       System.exit(1);
     }
+    commander = new ClientCommandInvoker(client);
   }
 
   
@@ -73,6 +81,14 @@ public class ClientConsole implements ChatIF
       while (true) 
       {
         message = fromConsole.readLine();
+        /*
+        * Checks if message follows command conventions (starts with #)
+        * If message is formatted as command, sends command to command invoker
+        * DOES NOT guarantees that message is executable command
+        */
+        if (Command.isCommand(message)) {
+          commander.execute(new Command(message));
+        }
         client.handleMessageFromClientUI(message);
       }
     } 
@@ -102,12 +118,18 @@ public class ClientConsole implements ChatIF
    * @param args[0] The host to connect to.
    */
   public static void main(String[] args) {
+    String id =  "";
     String host = "";
     int port = 0;  //The port number
-
     try {
-      host = args[0];
-      port = Integer.valueOf(args[1]);
+      id = args[0];
+    } catch (IndexOutOfBoundsException e) {
+      System.out.println("Login is not specified, terminating client");
+      System.exit(0);
+    }
+    try {
+      host = args[1];
+      port = Integer.valueOf(args[2]);
       System.out.println(port);
     }
     catch(IndexOutOfBoundsException e) {
@@ -122,7 +144,7 @@ public class ClientConsole implements ChatIF
     if (!(1 <= intLength(port) && intLength(port) <= 5)) {
       port = DEFAULT_PORT;
     }
-    ClientConsole chat= new ClientConsole(host, port);
+    ClientConsole chat= new ClientConsole(id, host, port);
     chat.accept();  //Wait for console data
   }
   private static int intLength(int number) {
