@@ -23,18 +23,25 @@ public class ClientCommandInvoker {
         switch(command.getCommand()) {
             case "quit":
                 handler.quit();
+                break;
             case "logoff":
                 handler.logoff();
+                break;
             case "login":
                 handler.login();
+                break;
             case "sethost":
                 handler.setHost(command.getArgument());
+                break;
             case "setport":
                 handler.setPort(command.getArgument());
+                break;
             case "gethost":
                 handler.getHost();
+                break;
             case "getport":
                 handler.getPort();
+                break;
             default:
                 handler.unknown();
         }

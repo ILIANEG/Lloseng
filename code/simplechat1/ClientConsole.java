@@ -88,8 +88,9 @@ public class ClientConsole implements ChatIF
         */
         if (Command.isCommand(message)) {
           commander.execute(new Command(message));
+        } else {
+          client.handleMessageFromClientUI(message);
         }
-        client.handleMessageFromClientUI(message);
       }
     } 
     catch (Exception ex) {

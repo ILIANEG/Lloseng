@@ -23,16 +23,22 @@ public class ServerCommandInvoker {
         switch(command.getCommand()) {
             case "quit":
                 handler.quit();
+                break;
             case "stop":
                 handler.stop();
+                break;
             case "close":
                 handler.close();
+                break;
             case "setport":
                 handler.setPort(command.getArgument());
+                break;
             case "start":
                 handler.start();
+                break;
             case "getport":
                 handler.getPort();
+                break;
             default:
                 handler.unknown();
         }

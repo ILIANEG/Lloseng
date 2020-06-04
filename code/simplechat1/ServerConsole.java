@@ -22,7 +22,7 @@ public class ServerConsole implements ChatIF {
 
 
     public ServerConsole(int port) {
-        server = new EchoServer(port);
+        server = new EchoServer(port, this);
         commander = new ServerCommandInvoker(server);
     }
 
