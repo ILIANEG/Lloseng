@@ -183,10 +183,10 @@ A new client is attempting to connect to the server.
 
 *****
 2015
--
+##Network problems, i was troubleshooting for about 2 weeks, can not wait longer to submit##
 *****
 2016
--
+##Network problems, i was troubleshooting for about 2 weeks, can not wait longer to submit##
 *****
 2017
 
@@ -217,10 +217,10 @@ Connection closed
 
 *****
 2018
--
+##No Access##
 *****
 2019
--
+##No Access##
 
 
 
