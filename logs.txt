@@ -1,0 +1,227 @@
+*****
+2001
+
+[illia@illia simplechat1]$ java server.EchoServer 
+Server listening for connections on port 5555
+
+*****
+2002
+
+[illia@illia simplechat1]$ java ClientConsole
+ERROR - No login ID specified.  Connection aborted
+
+*****
+2003
+
+[illia@illia simplechat1]$ java ClientConsole '<illia>'
+Cannot open connection.  Awaiting command.
+
+*****
+2004
+
+[illia@illia simplechat1]$ java server.EchoServer 
+Server listening for connections on port 5555
+SYSTEM MSG> A new client is attempting to connect to the server.
+SYSTEM MSG> <illia> has logged on
+
+[illia@illia simplechat1]$ java ClientConsole '<illia>'
+> <illia> has logged on
+
+*****
+2005
+
+[illia@illia simplechat1]$ java server.EchoServer 
+Server listening for connections on port 5555
+A new client is attempting to connect to the server.
+<illia> has logged on
+Message received: helloworld from <illia>
+
+
+[illia@illia simplechat1]$ java ClientConsole '<illia>'
+> <illia> has logged on
+helloworld
+> helloworld
+
+*****
+2006
+
+[illia@illia simplechat1]$ java ServerConsole
+Server listening for connections on port 5555
+A new client is attempting to connect to the server.
+<user1> has logged on
+A new client is attempting to connect to the server.
+<user2> has logged on
+Message received: hello from <user1>
+Message received: and you hello from <user2>
+hello to all
+SERVER MSG> hello to all
+
+illia@illia simplechat1]$ java ClientConsole '<user1>'
+> <user1> has logged on
+> <user2> has logged on
+hello
+> hello
+> and you hello
+> SERVER MSG> hello to all
+
+[illia@illia simplechat1]$ java ClientConsole '<user2>'
+> <user2> has logged on
+> hello
+and you hello
+> and you hello
+> SERVER MSG> hello to all
+
+*****
+2007
+
+[illia@illia simplechat1]$ java ServerConsole
+Server listening for connections on port 5555
+#quit
+Server has stopped listening for connections.
+[illia@illia simplechat1]$ 
+*****
+2008
+
+[illia@illia simplechat1]$ java ServerConsole
+Server listening for connections on port 5555
+A new client is attempting to connect to the server.
+<user1> has logged on
+#stop   
+Server has stopped listening for connections.
+Message received: hello from <user1>
+
+[illia@illia simplechat1]$ java ClientConsole '<user1>'
+> <user1> has logged on
+hello
+> hello
+
+[illia@illia simplechat1]$ java ClientConsole '<user2>'
+
+*****
+2009
+
+[illia@illia simplechat1]$ java ServerConsole 
+Server listening for connections on port 5555
+A new client is attempting to connect to the server.
+<user1> has logged on
+#stop
+Server has stopped listening for connections.
+#close
+<user1> has disconnected
+
+[illia@illia simplechat1]$ java ClientConsole '<user1>'
+> <user1> has logged on
+SERVER SHUTTING DOWN! DISCONNECTING!
+Abnormal termination of connection
+
+*****
+2009
+
+[illia@illia simplechat1]$ java ServerConsole 
+Server listening for connections on port 5555
+A new client is attempting to connect to the server.
+<user1> has logged on
+#close
+Server has stopped listening for connections.
+<user1> has disconnected
+#start
+Server listening for connections on port 5555
+A new client is attempting to connect to the server.
+<user1> has logged on
+
+[illia@illia simplechat1]$ java ClientConsole '<user1>'
+> <user1> has logged on
+SERVER SHUTTING DOWN! DISCONNECTING!
+Abnormal termination of connection
+#login
+> <user1> has logged on
+
+*****
+2010
+
+[illia@illia simplechat1]$ java ClientConsole '<user1>'
+> <user1> has logged on
+#quit
+Connection with server was shut down
+[illia@illia simplechat1]$
+
+*****
+2011
+
+[illia@illia simplechat1]$ java ClientConsole '<user1>'
+> <user1> has logged on
+#logoff
+Connection closed
+
+*****
+2012
+
+[illia@illia simplechat1]$ java ClientConsole '<user1>'
+Cannot open connection.  Awaiting command.
+#sethost <illia>
+Host set to: illia
+#setport <1234>
+port set to: 1234
+
+*****
+2013
+
+[illia@illia simplechat1]$ java ServerConsole 1234
+Server listening for connections on port 1234
+
+*****
+2014
+
+[illia@illia simplechat1]$ java ServerConsole 1234
+Server listening for connections on port 1234
+A new client is attempting to connect to the server.
+<user2> has logged on
+
+[illia@illia simplechat1]$ java ClientConsole '<user2>' localhost 1234
+1234
+> <user2> has logged on
+
+*****
+2015
+-
+*****
+2016
+-
+*****
+2017
+
+[illia@illia simplechat1]$ java ServerConsole
+Server listening for connections on port 5555
+A new client is attempting to connect to the server.
+<console1> has logged on
+A new client is attempting to connect to the server.
+<console2> has logged on
+A new client is attempting to connect to the server.
+<console3> has logged on
+<console1> has disconnected
+<console2> has disconnected
+
+[illia@illia simplechat1]$ java ClientConsole '<console1>'
+> <console1> has logged on
+> <console2> has logged on
+> <console3> has logged on
+#quit
+Connection closed
+[illia@illia simplechat1]$ 
+
+[illia@illia simplechat1]$ java ClientConsole '<console3>'
+> <console3> has logged on
+> <console1> has disconnected
+> <console2> has disconnected
+
+
+*****
+2018
+-
+*****
+2019
+-
+
+
+
+

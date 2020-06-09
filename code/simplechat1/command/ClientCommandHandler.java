@@ -59,8 +59,10 @@ class ClientCommandHandler {
     public void setHost(String host) {
         if (host == null) {
             client.displaySystem("Attempt to set host was unsuccesfull");
-          }
-          setHost(host);
+        } else {
+            client.setHost(host); 
+            client.displaySystem("Host set to: " + client.getHost());
+        }
     }
 
     /**
@@ -79,6 +81,7 @@ class ClientCommandHandler {
             return;
           }
         client.setPort(p);
+        client.displaySystem("port set to: " + Integer.toString(client.getPort()));
     }
 
     /**
@@ -92,7 +95,7 @@ class ClientCommandHandler {
      * Displays ChatClient's port number
      */
     public void getPort() {
-        client.displaySystem(Integer.toString(client.getPort()));
+        client.displaySystem("connected to port #"+Integer.toString(client.getPort()));
     }
 
     public void unknown() {

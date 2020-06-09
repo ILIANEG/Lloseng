@@ -8,39 +8,37 @@ import command.*;
 import common.*;
 
 /**
- * This class constructs the UI for a chat client.  It implements the
- * chat interface in order to activate the display() method.
- * Warning: Some of the code here is cloned in ServerConsole 
+ * This class constructs the UI for a chat client. It implements the chat
+ * interface in order to activate the display() method. Warning: Some of the
+ * code here is cloned in ServerConsole
  *
  * @author Fran&ccedil;ois B&eacute;langer
- * @author Dr Timothy C. Lethbridge  
+ * @author Dr Timothy C. Lethbridge
  * @author Dr Robert Lagani&egrave;re
  * @version July 2000
  */
-public class ClientConsole implements ChatIF 
-{
-  //Class variables *************************************************
-  
+public class ClientConsole implements ChatIF {
+  // Class variables *************************************************
+
   /**
    * The default port to connect on.
    */
   final public static int DEFAULT_PORT = 5555;
-  
-  //Instance variables **********************************************
-  
+
+  // Instance variables **********************************************
+
   /**
    * The instance of the client that created this ConsoleChat.
    */
   ChatClient client;
 
   /**
-   * instance of command invoker which will take care about 
-   * executing commands when appropriately formatted message
-   * obtained from user
+   * instance of command invoker which will take care about executing commands
+   * when appropriately formatted message obtained from user
    */
   ClientCommandInvoker commander;
-  
-  //Constructors ****************************************************
+
+  // Constructors ****************************************************
 
   /**
    * Constructs an instance of the ClientConsole UI.
@@ -48,106 +46,85 @@ public class ClientConsole implements ChatIF
    * @param host The host to connect to.
    * @param port The port to connect on.
    */
-  public ClientConsole(String id, String host, int port) 
-  {
-    try 
-    {
-      client= new ChatClient(id, host, port, this);
-    } 
-    catch(IOException exception) 
-    {
-      System.out.println("Error: Can't setup connection!"
-                + " Terminating client.");
-      System.exit(1);
-    }
+  public ClientConsole(String id, String host, int port) {
+    client = new ChatClient(id, host, port, this);
     commander = new ClientCommandInvoker(client);
   }
 
-  
-  //Instance methods ************************************************
-  
+  // Instance methods ************************************************
+
   /**
-   * This method waits for input from the console.  Once it is 
-   * received, it sends it to the client's message handler.
+   * This method waits for input from the console. Once it is received, it sends
+   * it to the client's message handler.
    */
-  public void accept() 
-  {
-    try
-    {
-      BufferedReader fromConsole = 
-        new BufferedReader(new InputStreamReader(System.in));
+  public void accept() {
+    try {
+      BufferedReader fromConsole = new BufferedReader(new InputStreamReader(System.in));
       String message;
 
-      while (true) 
-      {
+      while (true) {
         message = fromConsole.readLine();
         /*
-        * Checks if message follows command conventions (starts with #)
-        * If message is formatted as command, sends command to command invoker
-        * DOES NOT guarantees that message is executable command
-        */
+         * Checks if message follows command conventions (starts with #) If message is
+         * formatted as command, sends command to command invoker DOES NOT guarantees
+         * that message is executable command
+         */
         if (Command.isCommand(message)) {
           commander.execute(new Command(message));
         } else {
           client.handleMessageFromClientUI(message);
         }
       }
-    } 
-    catch (Exception ex) {
-      System.out.println
-        ("Unexpected error while reading from console!");
+    } catch (Exception ex) {
+      System.out.println("Unexpected error while reading from console!");
     }
   }
 
   /**
-   * This method overrides the method in the ChatIF interface.  It
-   * displays a message onto the screen.
+   * This method overrides the method in the ChatIF interface. It displays a
+   * message onto the screen.
    *
    * @param message The string to be displayed.
    */
-  public void display(String message) 
-  {
+  public void display(String message) {
     System.out.println("> " + message);
   }
 
-  
-  //Class methods ***************************************************
-  
+  // Class methods ***************************************************
+
   /**
    * This method is responsible for the creation of the Client UI.
    *
    * @param args[0] The host to connect to.
    */
   public static void main(String[] args) {
-    String id =  "";
+    String id = "";
     String host = "";
-    int port = 0;  //The port number
+    int port = 0; // The port number
     try {
       id = args[0];
     } catch (IndexOutOfBoundsException e) {
-      System.out.println("Login is not specified, terminating client");
+      System.out.println("ERROR - No login ID specified.  Connection aborted");
       System.exit(0);
     }
     try {
       host = args[1];
       port = Integer.valueOf(args[2]);
-      System.out.println(port);
-    }
-    catch(IndexOutOfBoundsException e) {
+    } catch (IndexOutOfBoundsException e) {
       host = "localhost";
       try {
-        port = Integer.valueOf(args[0]);
-      } 
-      catch (Exception b) {
+        port = Integer.valueOf(args[1]);
+      } catch (Exception b) {
         port = DEFAULT_PORT;
       }
     }
     if (!(1 <= intLength(port) && intLength(port) <= 5)) {
       port = DEFAULT_PORT;
     }
-    ClientConsole chat= new ClientConsole(id, host, port);
-    chat.accept();  //Wait for console data
+    ClientConsole chat = new ClientConsole(id, host, port);
+    chat.accept(); // Wait for console data
   }
+
   private static int intLength(int number) {
     int divisor = 1;
     int length = 1;
@@ -158,4 +135,4 @@ public class ClientConsole implements ChatIF
     return length;
   }
 }
-//End of ConsoleChat class
+// End of ConsoleChat class

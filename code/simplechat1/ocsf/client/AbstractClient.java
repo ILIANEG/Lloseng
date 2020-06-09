@@ -157,6 +157,7 @@ public abstract class AbstractClient implements Runnable {
 	final public void closeConnection() throws IOException {
 		// Prevent the thread from looping any more
 		readyToStop = true;
+
 		try {
 			closeAll();
 		} finally {

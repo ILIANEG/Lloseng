@@ -12,9 +12,8 @@ public class ServerCommandHandler {
     }
 
     public void quit() {
-        stop();
-        close();
-        System.exit(0);
+      close();
+      System.exit(0);
     }
 
     public void stop() {
@@ -44,6 +43,7 @@ public class ServerCommandHandler {
           return;
         }
         server.setPort(p);
+        server.displaySystem("port set to: "+Integer.toString(server.getPort()));
     }
 
     public void start() {

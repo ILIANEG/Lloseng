@@ -57,6 +57,8 @@ public class EchoServer extends AbstractServer {
     if (Command.isCommand((String) msg)) {
       Command c = new Command((String) msg);
       client.setInfo("loginID", c.getArgument());
+      System.out.println("<"+client.getInfo("loginID")+">"+" has logged on");
+      this.sendToAllClients("<"+client.getInfo("loginID")+">"+" has logged on");
     } else if (!(Command.isCommand((String) msg)) && client.getInfo("loginID") == null) {
       try {
         client.sendToClient("Invalid ID");
@@ -69,7 +71,7 @@ public class EchoServer extends AbstractServer {
         }
       }
     } else {
-      System.out.println("Message received: " + msg + " from " + client);
+      System.out.println("Message received: "+msg+" from "+"<"+client.getInfo("loginID")+">");
       this.sendToAllClients(msg);
     }
   }
@@ -88,30 +90,67 @@ public class EchoServer extends AbstractServer {
    */
   protected void serverStopped() {
     System.out.println("Server has stopped listening for connections.");
+    sendToAllClients("WARNING - Server has stopped listening for connections.");
   }
 
   public void displaySystem(String sys) {
-    serverUI.display("SYSTEM> " + sys);
+    System.out.println(sys);
   }
 
   /**
    * Prints notification about connected client
    */
   protected void clientConnected(ConnectionToClient client) {
-    System.out.println("Client " + client.toString() + " connected to the server");
+    System.out.println("A new client is attempting to connect to the server.");
   }
 
   /**
    * Prints notification about disconnected client
    */
   synchronized protected void clientDisconnected(ConnectionToClient client) {
-    System.out.println("Client disconnected from the server");
+    String msg = "<"+client.getInfo("loginID")+">"+" has disconnected";
+    System.out.println(msg);
+    sendToAllClients(msg);
   }
 
   /**
    * prints notification if connection with client was interrupted
    */
   synchronized protected void clientException(ConnectionToClient client, Throwable exception) {
-    System.out.println("Connection with client was interrupted");
+    clientDisconnected(client);
+  }
+
+  //Class methods ***************************************************
+  
+  /**
+   * This method is responsible for the creation of 
+   * the server instance (there is no UI in this phase).
+   *
+   * @param args[0] The port number to listen on.  Defaults to 5555 
+   *          if no argument is entered.
+   */
+  public static void main(String[] args) 
+  {
+    int port = 0; //Port to listen on
+
+    try
+    {
+      port = Integer.parseInt(args[0]); //Get port from command line
+    }
+    catch(Throwable t)
+    {
+      port = DEFAULT_PORT; //Set port to 5555
+    }
+	
+    EchoServer sv = new EchoServer(port, null);
+    
+    try 
+    {
+      sv.listen(); //Start listening for connections
+    } 
+    catch (Exception ex) 
+    {
+      System.out.println("ERROR - Could not listen for clients!");
+    }
   }
 }

@@ -41,16 +41,19 @@ public class ChatClient extends AbstractClient {
    * @param clientUI The interface type variable.
    */
 
-  public ChatClient(String loginID, String host, int port, ChatIF clientUI)
-      throws IOException, IllegalArgumentException {
-    super(host, port); // Call the superclass constructor
+  public ChatClient(String loginID, String host, int port, ChatIF clientUI) throws IllegalArgumentException {
+    super(host, port);
     this.clientUI = clientUI;
     if (loginID == null) {
       throw new IllegalArgumentException();
     } else {
       this.loginID = loginID;
     }
-    openConnection();
+    try {
+      openConnection();
+    } catch (IOException e) {
+      System.out.println("Cannot open connection.  Awaiting command.");
+    }
   }
 
   // Instance methods ************************************************
@@ -73,7 +76,7 @@ public class ChatClient extends AbstractClient {
     try {
       sendToServer(message);
     } catch (IOException e) {
-      clientUI.display("Could not send message to server.  Terminating client.");
+      System.out.println("Could not send message to server.  Terminating client.");
       quit();
     }
   }
@@ -97,10 +100,10 @@ public class ChatClient extends AbstractClient {
    * Method sends system message to client, such as command output For example
    * when command was not executed successfully Warning will be displayed
    * 
-   * @param warning
+   * @param sys
    */
   public void displaySystem(String sys) {
-    clientUI.display("SYSTEM> " + sys);
+    System.out.println(sys);
   }
 
   /**
@@ -108,7 +111,7 @@ public class ChatClient extends AbstractClient {
    * closed
    */
   protected void connectionClosed() {
-    clientUI.display("Connection with server was shut down");
+    System.out.println("Connection closed");
   }
 
   /**
@@ -116,7 +119,8 @@ public class ChatClient extends AbstractClient {
    * with the server
    */
   protected void connectionException(Exception exception) {
-    clientUI.display("Connection with server was interrupted");
+    System.out.println("SERVER SHUTTING DOWN! DISCONNECTING!");
+    System.out.println("Abnormal termination of connection");
   }
 
   /**
@@ -127,7 +131,7 @@ public class ChatClient extends AbstractClient {
     try {
       sendToServer("#login <" + loginID + ">");
     } catch (IOException e) {
-      clientUI.display("Could not send message to server.  Terminating client.");
+      System.out.println("Could not notify the server. Terminating client.");
       quit();
     }
   }
